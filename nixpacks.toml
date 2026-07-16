@@ -1,0 +1,25 @@
+# nixpacks.toml
+
+[variables]
+# Set the PHP document root to the public directory
+NIXPACKS_PHP_ROOT_DIR = "/app/public"
+NODE_ENV = "production"
+APP_ENV = "production"
+
+[phases.install]
+# Install dependencies for PHP (Composer) and Javascript (npm)
+cmds = [
+  "composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader",
+  "npm install"
+]
+
+[phases.build]
+# Build assets and optimize Laravel performance
+cmds = [
+  "npm run build",
+  "php artisan optimize"
+]
+
+[start]
+# Run database migrations before starting the web server (Nginx + PHP-FPM)
+cmd = "php artisan migrate --force && php-fpm -D && nginx -g 'daemon off;'"
